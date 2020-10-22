@@ -1,28 +1,28 @@
 // Compound Components
 // http://localhost:3000/isolated/exercise/02.js
 
-import React from 'react'
-import {Switch} from '../switch'
+import React from "react"
+import { Switch } from "../switch"
 
-function Toggle({children}) {
+function Toggle({ children }) {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
 
-  return React.Children.map(children, child => {
+  return React.Children.map(children, (child) => {
     // note can limit to specific components using includes on an allowedTypes array
-    if (typeof child === 'string') {
+    if (typeof child === "string") {
       return child
     } else {
-      return React.cloneElement(child, {on, toggle})
+      return React.cloneElement(child, { on, toggle })
     }
   })
 }
 
-const ToggleOn = ({on, children}) => (on ? children : null)
-const ToggleOff = ({on, children}) => (on ? null : children)
-const ToggleButton = ({on, toggle}) => <Switch on={on} onClick={toggle} />
+const ToggleOn = ({ on, children }) => (on ? children : null)
+const ToggleOff = ({ on, children }) => (on ? null : children)
+const ToggleButton = ({ on, toggle }) => <Switch on={on} onClick={toggle} />
 
-const CustomMessage = ({on, toggle}) => (on ? 'this be on' : 'doh off')
+const CustomMessage = ({ on, toggle }) => (on ? "this be on" : "doh off")
 
 // allowedTypes = [ToggleOn, ToggleOff, ToggleButton]
 

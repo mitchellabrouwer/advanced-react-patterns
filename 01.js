@@ -1,44 +1,44 @@
 // Context Module Functions
 // http://localhost:3000/isolated/exercise/01.js
 
-import {dequal} from 'dequal'
-import React from 'react'
-import {useAuth} from '../auth-context'
+import { dequal } from "dequal"
+import React from "react"
+import { useAuth } from "../auth-context"
 // ./context/user-context.js
-import * as userClient from '../user-client'
+import * as userClient from "../user-client"
 
 const UserContext = React.createContext()
-UserContext.displayName = 'UserContext'
+UserContext.displayName = "UserContext"
 
 function userReducer(state, action) {
   switch (action.type) {
-    case 'start update': {
+    case "start update": {
       return {
         ...state,
-        user: {...state.user, ...action.updates},
-        status: 'pending',
+        user: { ...state.user, ...action.updates },
+        status: "pending",
         storedUser: state.user,
       }
     }
-    case 'finish update': {
+    case "finish update": {
       return {
         ...state,
         user: action.updatedUser,
-        status: 'resolved',
+        status: "resolved",
         storedUser: null,
         error: null,
       }
     }
-    case 'fail update': {
+    case "fail update": {
       return {
         ...state,
-        status: 'rejected',
+        status: "rejected",
         error: action.error,
         user: state.storedUser,
         storedUser: null,
       }
     }
-    case 'reset': {
+    case "reset": {
       return {
         ...state,
         status: null,
@@ -51,8 +51,8 @@ function userReducer(state, action) {
   }
 }
 
-function UserProvider({children}) {
-  const {user} = useAuth()
+function UserProvider({ children }) {
+  const { user } = useAuth()
   const [state, dispatch] = React.useReducer(userReducer, {
     status: null,
     error: null,
@@ -72,13 +72,13 @@ function useUser() {
 }
 
 async function updateUser(dispatch, user, updates) {
-  dispatch({type: 'start update', updates})
+  dispatch({ type: "start update", updates })
   try {
     const updatedUser = userClient.updateUser(user, updates)
-    dispatch({type: 'finish update', updatedUser})
+    dispatch({ type: "finish update", updatedUser })
     return updatedUser
   } catch (error) {
-    dispatch({type: 'fail update', error})
+    dispatch({ type: "fail update", error })
     throw error
   }
 }
@@ -88,17 +88,17 @@ async function updateUser(dispatch, user, updates) {
 // src/screens/user-profile.js
 // import {UserProvider, useUser} from './context/user-context'
 function UserSettings() {
-  const [{user, status, error}, userDispatch] = useUser()
+  const [{ user, status, error }, userDispatch] = useUser()
 
-  const isPending = status === 'pending'
-  const isRejected = status === 'rejected'
+  const isPending = status === "pending"
+  const isRejected = status === "rejected"
 
   const [formState, setFormState] = React.useState(user)
 
   const isChanged = !dequal(user, formState)
 
   function handleChange(e) {
-    setFormState({...formState, [e.target.name]: e.target.value})
+    setFormState({ ...formState, [e.target.name]: e.target.value })
   }
 
   function handleSubmit(event) {
@@ -108,8 +108,8 @@ function UserSettings() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{marginBottom: 12}}>
-        <label style={{display: 'block'}} htmlFor="username">
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ display: "block" }} htmlFor="username">
           Username
         </label>
         <input
@@ -118,11 +118,11 @@ function UserSettings() {
           disabled
           readOnly
           value={formState.username}
-          style={{width: '100%'}}
+          style={{ width: "100%" }}
         />
       </div>
-      <div style={{marginBottom: 12}}>
-        <label style={{display: 'block'}} htmlFor="tagline">
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ display: "block" }} htmlFor="tagline">
           Tagline
         </label>
         <input
@@ -130,11 +130,11 @@ function UserSettings() {
           name="tagline"
           value={formState.tagline}
           onChange={handleChange}
-          style={{width: '100%'}}
+          style={{ width: "100%" }}
         />
       </div>
-      <div style={{marginBottom: 12}}>
-        <label style={{display: 'block'}} htmlFor="bio">
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ display: "block" }} htmlFor="bio">
           Biography
         </label>
         <textarea
@@ -142,7 +142,7 @@ function UserSettings() {
           name="bio"
           value={formState.bio}
           onChange={handleChange}
-          style={{width: '100%'}}
+          style={{ width: "100%" }}
         />
       </div>
       <div>
@@ -150,7 +150,7 @@ function UserSettings() {
           type="button"
           onClick={() => {
             setFormState(user)
-            userDispatch({type: 'reset'})
+            userDispatch({ type: "reset" })
           }}
           disabled={!isChanged || isPending}
         >
@@ -161,21 +161,23 @@ function UserSettings() {
           disabled={(!isChanged && !isRejected) || isPending}
         >
           {isPending
-            ? '...'
+            ? "..."
             : isRejected
-            ? '✖ Try again'
+            ? "✖ Try again"
             : isChanged
-            ? 'Submit'
-            : '✔'}
+            ? "Submit"
+            : "✔"}
         </button>
-        {isRejected ? <pre style={{color: 'red'}}>{error.message}</pre> : null}
+        {isRejected ? (
+          <pre style={{ color: "red" }}>{error.message}</pre>
+        ) : null}
       </div>
     </form>
   )
 }
 
 function UserDataDisplay() {
-  const [{user}] = useUser()
+  const [{ user }] = useUser()
   return <pre>{JSON.stringify(user, null, 2)}</pre>
 }
 
@@ -185,10 +187,10 @@ function App() {
       style={{
         height: 350,
         width: 300,
-        backgroundColor: '#ddd',
+        backgroundColor: "#ddd",
         borderRadius: 4,
         padding: 10,
-        overflow: 'scroll',
+        overflow: "scroll",
       }}
     >
       <UserProvider>
